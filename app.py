@@ -1,16 +1,18 @@
 import streamlit as st
-import torch
 import pandas as pd
 import cv2
 import numpy as np
 from PIL import Image
 from collections import Counter
-import os
-import sys
+from ultralytics import YOLO
 
 # Load YOLOv5 model
-sys.path.append('yolov5')  # path to yolov5 folder
-model = torch.hub.load('yolov5', 'yolov5s', source='local')  # Use yolov5s model
+try:
+    model = YOLO('yolov5/yolov5s.pt')  # Path to your yolov5s.pt
+    st.write("Model loaded successfully")
+except Exception as e:
+    st.error(f"Error loading model: {str(e)}")
+    raise
 
 st.set_page_config(page_title="YOLO Object Detection", layout="centered")
 st.title("🖼️ YOLO Object Detection App")
@@ -29,8 +31,8 @@ if uploaded_file is not None:
     results = model(image_np)
 
     # Draw results
-    results.render()
-    rendered_image = Image.fromarray(results.ims[0])
+    results = results[0]  # Get first result for single image
+    rendered_image = Image.fromarray(results.plot())
 
     # Display image with bounding boxes
     st.image(rendered_image, caption='Detected Objects', use_column_width=True)
