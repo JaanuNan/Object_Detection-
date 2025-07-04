@@ -8,3 +8,8 @@ Pillow
 PyYAML
 matplotlib
 seaborn
+tqdm
+requests
+scipy
+psutil
+thop
